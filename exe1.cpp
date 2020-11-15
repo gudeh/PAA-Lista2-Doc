@@ -27,8 +27,8 @@ struct node {
      node* previous=NULL;
      int id=0;
      //Cada nodo possui um set com ponteiros para nodos que conectam a este nodo.
-     //O container set garante que nao haverao repeticoes entre os elementos,
-     //alem de providenciar acesso a membros com complexidade temporal aceitavel.
+     //O container SET garante que não haverão repetições entre os elementos,
+     //além de providenciar acesso a membros com complexidade temporal aceitavel.
     set<node*> conexoes;
 };
 
@@ -43,7 +43,9 @@ printQueue(queue<node*> Q){
 
 //Funcao que resolve o primeiro exercicio, a chamada dela é feita na main
 vector<int> primeiroExercicio(vector<int> centrais,vector<pair<int,int> > adjacencias, int origem, int destino){
-    //Inicializando grafo a partir dos parametros informados
+    //Inicializando grafo a partir dos parametros informados.
+    //O grafo é armazenado em formato de hash, ou seja a estrtura MAP do C++.
+    //As chaves serão os IDs dos nodos que referenciam aos próprios nodos (struct acima).
     map<int,node> my_graph;
     for (vector<int>::iterator it=centrais.begin();it!=centrais.end();it++)
     {
@@ -107,6 +109,10 @@ vector<int> primeiroExercicio(vector<int> centrais,vector<pair<int,int> > adjace
 int main(int argc, char** argv) {
 //    vector<int> centrais_exemplo={1,2,3,4,5,23,35,50};
 //    vector<pair<int,int> > adjacencias_exemplo={pair<int,int>(2,3),pair<int,int>(4,5),pair<int,int>(2,4),pair<int,int>(5,23),pair<int,int>(2,4)};
+    
+    //Os IDs dos nodos e as adjacencias devem ser explicitamente expostas com os vectors: centrais_exemplo e adjacencias_exemplo, 
+    //no qual são enviados como parâmetro para a função que resolve o exercicio 1.
+    //O programa foi testado empiracamente com diferentes combinações de conexões e parece estar funcionando como deveria.
     vector<int> centrais_exemplo={1,2,3,4,5,6};
     vector<pair<int,int> > adjacencias_exemplo={pair<int,int>(1,2),pair<int,int>(1,3),pair<int,int>(1,4),pair<int,int>(3,4),pair<int,int>(4,6),pair<int,int>(3,5),pair<int,int>(6,5)};
     primeiroExercicio(centrais_exemplo,adjacencias_exemplo,1,5);
