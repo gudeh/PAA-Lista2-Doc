@@ -38,12 +38,7 @@ void print_shortest_path(int source, int destination, int cost, vector<int> pare
     cout << "Destino: " << destination << endl;
     cout << "Custo: " << cost << endl;
     cout << "Caminho: " << source;
-    for(int i = 1; i < V; i++) {
-        if(i != destination) {
-            continue;
-        }
-        tracking_path(parent, i);
-    }
+    tracking_path(parent, destination);
     cout << endl;
 }
 
@@ -98,7 +93,7 @@ int main() {
     adj[2].push_back({4, 1});
     adj[3].push_back({2, 2});
     adj[3].push_back({4, 6});
-    
+
     //chamada para calcular o menor caminho passando a lista de adjacencias, o numero de vertices do grafo, a origem e o destino
     dijkstra(adj, V, 0, 4);
 
