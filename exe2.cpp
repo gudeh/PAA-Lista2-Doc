@@ -23,12 +23,27 @@ const int V = 5;
 const int INF = INT_MAX;
 typedef pair<int, int> my_pair;
 
-//imprime a solucao do problema -> implementar para mostrar o caminho dos vertices percorridos
-void print_shortest_path(int source, int destination, int cost) {
-    cout << "Origem: "  << source << endl; 
-    cout << "Destino: " << destination << endl;
-    cout << "Custo: " << cost << endl;
-    //cout << "Caminho: " << endl;
+//funcao recursiva auxiliar para printar os vertices do menor caminho
+void tracking_path(vector<int> parent, int v) {
+    if(parent[v] == -1) {
+        return;
+    }
+    tracking_path(parent, parent[v]);
+    cout << " -> " << v;
+}
+
+//imprime a solucao do problema
+void print_shortest_path(int source, int destination, int cost, vector<int> parent) {
+    for(int i = 1; i < V; i++) {
+        if(i != destination) {
+            continue;
+        }
+        cout << "Origem: "  << source << endl; 
+        cout << "Destino: " << destination << endl;
+        cout << "Custo: " << cost << endl;
+        cout << "Caminho: " << source;
+        tracking_path(parent, i);
+    } 
 }
 
 //funcao dijkstra para calcular o menor caminho
@@ -56,7 +71,7 @@ void dijkstra(vector<my_pair> adj[], int V, int source, int destination) {
         }
         visited[u] = true;
         if(u == destination) { //se o vertice que esta sendo analisado eh o destino
-            print_shortest_path(source, destination, cost);
+            print_shortest_path(source, destination, cost, parent);
             return;
         }
         //percorre a lista de adjacencias
