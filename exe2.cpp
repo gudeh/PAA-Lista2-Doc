@@ -71,14 +71,23 @@ void dijkstra(vector<my_pair> adj[], int V, int source, int destination) {
             return;
         }
         //percorre a lista de adjacencias
-        for(auto e : adj[u]) { 
-            int v = e.first, w = e.second; 
+        vector<my_pair>::iterator itr;
+        for(itr = adj[u].begin(); itr != adj[u].end(); itr++) {
+            int v = (*itr).first, w = (*itr).second;
             if(dist[v] > dist[u] + w) { //relaxamento: verifica se existe um caminho menor do que o armazenado em dist atual
                 dist[v] = dist[u] + w;
                 parent[v] = u; //atribui para o vertice o seu antecessor que compoe o menor caminho
                 my_pq.push({dist[v], v}); //adiciona na fila de prioridades a nova dist atualizada (custo) e o vertice v
             }
         }
+        /*for(auto e : adj[u]) { 
+            int v = e.first, w = e.second; 
+            if(dist[v] > dist[u] + w) { //relaxamento: verifica se existe um caminho menor do que o armazenado em dist atual
+                dist[v] = dist[u] + w;
+                parent[v] = u; //atribui para o vertice o seu antecessor que compoe o menor caminho
+                my_pq.push({dist[v], v}); //adiciona na fila de prioridades a nova dist atualizada (custo) e o vertice v
+            }
+        }*/
     }
 }
 
