@@ -19,7 +19,6 @@
 
 using namespace std;
   
-const int V = 5;
 const int INF = INT_MAX;
 typedef pair<int, int> my_pair;
 
@@ -70,28 +69,20 @@ void dijkstra(vector<my_pair> adj[], int V, int source, int destination) {
             print_shortest_path(source, destination, cost, parent);
             return;
         }
-        //percorre a lista de adjacencias
-        vector<my_pair>::iterator itr;
-        for(itr = adj[u].begin(); itr != adj[u].end(); itr++) {
-            int v = (*itr).first, w = (*itr).second;
-            if(dist[v] > dist[u] + w) { //relaxamento: verifica se existe um caminho menor do que o armazenado em dist atual
-                dist[v] = dist[u] + w;
-                parent[v] = u; //atribui para o vertice o seu antecessor que compoe o menor caminho
-                my_pq.push({dist[v], v}); //adiciona na fila de prioridades a nova dist atualizada (custo) e o vertice v
-            }
-        }
-        /*for(auto e : adj[u]) { 
+        //percorre os vertices adjacentes ao atual
+        for(auto e : adj[u]) { 
             int v = e.first, w = e.second; 
             if(dist[v] > dist[u] + w) { //relaxamento: verifica se existe um caminho menor do que o armazenado em dist atual
                 dist[v] = dist[u] + w;
                 parent[v] = u; //atribui para o vertice o seu antecessor que compoe o menor caminho
                 my_pq.push({dist[v], v}); //adiciona na fila de prioridades a nova dist atualizada (custo) e o vertice v
             }
-        }*/
+        }
     }
 }
 
 int main() {
+    int V = 5;
     vector<my_pair> adj[V];
     
     //adicionando na lista de adjacencias os vertices com seus respectivos vizinhos e distancias
