@@ -34,16 +34,17 @@ void tracking_path(vector<int> parent, int v) {
 
 //imprime a solucao do problema
 void print_shortest_path(int source, int destination, int cost, vector<int> parent) {
+    cout << "Origem: "  << source << endl; 
+    cout << "Destino: " << destination << endl;
+    cout << "Custo: " << cost << endl;
+    cout << "Caminho: " << source;
     for(int i = 1; i < V; i++) {
         if(i != destination) {
             continue;
         }
-        cout << "Origem: "  << source << endl; 
-        cout << "Destino: " << destination << endl;
-        cout << "Custo: " << cost << endl;
-        cout << "Caminho: " << source;
         tracking_path(parent, i);
-    } 
+    }
+    cout << endl;
 }
 
 //funcao dijkstra para calcular o menor caminho
