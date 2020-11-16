@@ -32,6 +32,7 @@ int opt(vector<item> itens_restantes, vector<float> capacidade_atual){
     //caso base
     
     int total_cap=0; for(auto x:capacidade_atual) total_cap+=x;
+    cout<<"total cap:"<<total_cap<<endl;
     if(itens_restantes.size()==0 || total_cap<=0)
     {
         cout<<"Returning 0."<<endl;
@@ -45,7 +46,7 @@ int opt(vector<item> itens_restantes, vector<float> capacidade_atual){
         bool fit=false; int index=0,ret=0;
         for(int i=0;i<capacidade_atual.size();i++)
         {
-            if(current.peso<capacidade_atual[i])
+            if(current.peso<=capacidade_atual[i])
             {
                 index=i;
                 fit=true;
@@ -99,8 +100,8 @@ pair<vector<int>,int> exercicioDois(vector<float> capacidade_caminhoes, vector<u
 
 int main(int argc, char** argv) {
     
-    vector<float> capacidades={10,15};
-    vector<unsigned int> pesos={10,10,10,10,10},lucros={1,2,3,4,5};
+    vector<float> capacidades={10,15,20};
+    vector<unsigned int> pesos={10,10,10,10,10},lucros={10,2,2,5,5};
     
     if(pesos.size() == lucros.size())
         exercicioDois(capacidades,pesos,lucros);
