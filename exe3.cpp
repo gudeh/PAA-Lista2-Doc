@@ -22,7 +22,7 @@ using namespace std;
 
 vector<vector<vector<int> > > n_matrices;
 vector<vector<vector<int> > > n_matrices_ids;
-set<int> best;
+//set<int> best;
 
 
 struct item{
@@ -31,12 +31,12 @@ struct item{
     int lucro;
 };
 
-pair<int,vector<int> > opt(vector<item> itens_restantes,vector<float> capacidade_atual){
+pair<int,vector<item> > opt(vector<item> itens_restantes,vector<float> capacidade_atual){
     int total_cap=0; for(auto x:capacidade_atual) total_cap+=x;
 //    cout<<"total cap:"<<total_cap<<", item list size:"<<itens_restantes.size();
 //    for(int h=0;h<capacidade_atual.size();h++)
 //        cout<<",truck:"<<h<<">"<<capacidade_atual[h]; cout<<endl;
-    vector<int> selected;
+    vector<item> selected;
     if(itens_restantes.size()==0 || total_cap<=0)
     {
 //        if(itens_restantes.size()==0)
@@ -46,7 +46,7 @@ pair<int,vector<int> > opt(vector<item> itens_restantes,vector<float> capacidade
 //        cout<<"- RETURNING 0<<<<."<<endl;
 //        return 0;
 //        vector<int> aux;
-        return pair<int,vector<int> >(0,selected);
+        return pair<int,vector<item> >(0,selected);
     }
     else
     {
@@ -57,7 +57,7 @@ pair<int,vector<int> > opt(vector<item> itens_restantes,vector<float> capacidade
         for(int i=0;i<capacidade_atual.size();i++)
         {
             vector<item> item_aux; item_aux=itens_restantes;
-            pair<int,vector<int> > solut,solut2;
+            pair<int,vector<item> > solut,solut2;
             
             if(current.peso>capacidade_atual[i])
             {
@@ -69,7 +69,7 @@ pair<int,vector<int> > opt(vector<item> itens_restantes,vector<float> capacidade
 //                return ret;
                 
 //                n_matrices[i][capacidade_atual[i]][current.id]=ret;
-                best.erase(current.id);
+//                best.erase(current.id);
             }
             else
             {
@@ -88,19 +88,19 @@ pair<int,vector<int> > opt(vector<item> itens_restantes,vector<float> capacidade
                     if(aux1>aux2)
                     {
                         selected=get<1>(solut);
-                        selected.push_back(current.id);
-                        n_matrices_ids[i][capacidade_atual[i]][current.id]=current.id;
-                        best.insert(current.id);
+                        selected.push_back(current);
+//                        n_matrices_ids[i][capacidade_atual[i]][current.id]=current.id;
+//                        best.insert(current.id);
                     }
-                    else
-                        best.erase(current.id);
+//                    else
+//                        best.erase(current.id);
     //                cout<<"IN->current.peso:"<<current.peso<<",truck[i]:"<<capacidade_atual[i]<<endl;
     //                cout<<"-----RET2:"<<ret<<endl<<endl;
     //                return ret;
 
 //                    cout<<"i:"<<i<<",cap[i]:"<<capacidade_atual[i]<<",id:"<<current.id<<endl;
 //                    cout<<n_matrices.size()<<"|"<<n_matrices[i].size()<<"|"<<n_matrices[i][capacidade_atual[i]].size()<<endl;
-                    n_matrices[i][capacidade_atual[i]][current.id]=ret;
+//                    n_matrices[i][capacidade_atual[i]][current.id]=ret;
                     
 //                }
 //                else
@@ -116,7 +116,7 @@ pair<int,vector<int> > opt(vector<item> itens_restantes,vector<float> capacidade
         }
 //        return ret;
 //        vector<int> aux;
-        return pair<int,vector<int> >(ret,selected);
+        return pair<int,vector<item> >(ret,selected);
     }
 }
 
@@ -137,7 +137,7 @@ pair<vector<int>,int> exercicioDois(vector<float> capacidade_caminhoes, vector< 
         n_matrices.push_back(aux2);
     }
     n_matrices_ids=n_matrices;
-    cout<<n_matrices.size()<<"|"<<n_matrices[0].size()<<"|"<<n_matrices[0][2].size()<<endl;
+//    cout<<n_matrices.size()<<"|"<<n_matrices[0].size()<<"|"<<n_matrices[0][2].size()<<endl;
     vector<item> all_items;
     for(int x=0;x<peso_itens.size();x++)
     {
@@ -147,43 +147,45 @@ pair<vector<int>,int> exercicioDois(vector<float> capacidade_caminhoes, vector< 
         item_obj.lucro=lucro_itens[x];
         all_items.push_back(item_obj);
     }
-    int ret=0; pair<int,vector<int> > solution;
+    int ret=0; pair<int,vector<item> > solution;
     solution=opt(all_items,capacidade_caminhoes);
     ret=get<0>(solution);
-    for(int u=0;u<get<1>(solution).size();u++)
-        cout<<get<1>(solution)[u]<<","; cout<<endl;
-    cout<<">>RETORNO:"<<ret<<endl;
-    cout<<"best size:"<<best.size()<<endl;
-    for(set<int>::iterator it=best.begin();it!=best.end();it++)
-        cout<<(*it)<<","; cout<<endl;
-    int i=0,j=0,k=0;
-    for(auto x:n_matrices)
-    {
-        i++; cout<<"truck:"<<i<<endl;
-        for(auto y:x[i])
-            {j++;cout<<j<<"|";}cout<<endl;
-            k=0;
-        for(auto y:x)
-        {
-             cout<<k<<":";k++;
-            for(auto z:y)
-                cout<<z<<",";
-            cout<<endl;
-        }
-        cout<<endl;
-    }
+    cout<<"  ids:";for(int u=0;u<get<1>(solution).size();u++)
+        cout<<get<1>(solution)[u].id<<","; cout<<endl;
+    cout<<"pesos:";for(int u=0;u<get<1>(solution).size();u++)
+        cout<<get<1>(solution)[u].peso<<","; cout<<endl;
+    cout<<"lucro:";for(int u=0;u<get<1>(solution).size();u++)
+        cout<<get<1>(solution)[u].lucro<<","; cout<<endl;
+        
+    cout<<">>RETORNO:"<<ret<<endl;    
+//    int i=0,j=0,k=0;
+//    for(auto x:n_matrices)
+//    {
+//        i++; cout<<"truck:"<<i<<endl;
+//        for(auto y:x[i])
+//            {j++;cout<<j<<"|";}cout<<endl;
+//            k=0;
+//        for(auto y:x)
+//        {
+//             cout<<k<<":";k++;
+//            for(auto z:y)
+//                cout<<z<<",";
+//            cout<<endl;
+//        }
+//        cout<<endl;
+//    }
 }
 
 
 
 int main(int argc, char** argv) {
     
-//    vector<float> capacidades={3,5};
-//    vector< int> pesos={5,7,10},lucros={5,7,10};
+//    vector<float> capacidades={10,20};
+//    vector< int> pesos={5,7,10,20,10},lucros={5,7,10,20,10};
     
     vector<float> capacidades={90,100};
-    vector< int> pesos={18,9, 23, 20, 59, 61, 70, 75, 76, 30},
-                lucros={78,35, 89, 36, 94, 75, 74, 79, 80, 16};
+    vector< int> pesos={ 59, 61, 70, 75, 76, 30, 18,9, 23, 20},
+                lucros={ 94, 75, 74, 79, 80, 16, 78,35, 89, 36};
 
 
     
