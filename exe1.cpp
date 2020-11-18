@@ -72,9 +72,9 @@ vector<int> primeiroExercicio(vector<int> centrais,vector<pair<int,int> > adjace
     while(!my_queue.empty())
     {
         front=my_queue.front();
-        my_queue.pop();
         cout<<"front:"<<front->id<<", queue size:"<<my_queue.size()<<endl;
         printQueue(my_queue);
+        my_queue.pop();
         for(set<node*>::iterator it=front->conexoes.begin();it!=front->conexoes.end();it++)
         {
             if((*it)->visited==false)
@@ -114,7 +114,7 @@ int main(int argc, char** argv) {
     //no qual são enviados como parâmetro para a função que resolve o exercicio 1.
     //O programa foi testado empiracamente com diferentes combinações de conexões e parece estar funcionando como deveria.
     vector<int> centrais_exemplo={1,2,3,4,5,6};
-    vector<pair<int,int> > adjacencias_exemplo={pair<int,int>(1,2),pair<int,int>(1,3),pair<int,int>(1,4),pair<int,int>(3,4),pair<int,int>(4,6),pair<int,int>(3,5),pair<int,int>(6,5)};
+    vector<pair<int,int> > adjacencias_exemplo={pair<int,int>(1,2),pair<int,int>(1,3),pair<int,int>(1,4),pair<int,int>(4,6),pair<int,int>(3,5),pair<int,int>(6,5)};
     primeiroExercicio(centrais_exemplo,adjacencias_exemplo,1,5);
     return 0;
 }
