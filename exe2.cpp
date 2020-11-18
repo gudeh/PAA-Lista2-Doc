@@ -18,7 +18,7 @@
 #include <climits>
 
 using namespace std;
-  
+
 const int INF = INT_MAX;
 typedef pair<int, int> my_pair;
 
@@ -41,41 +41,41 @@ void print_shortest_path(int source, int destination, int cost, vector<int> pare
     cout << endl;
 }
 
-//funcao dijkstra para calcular o menor caminho
+//funcao dijkstra para calcular o menor custo da viagem
 //recebe a lista de adjacencias do grafo, o numero de vertices, a origem e o destino
-void dijkstra(vector<my_pair> adj[], int V, int source, int destination) {
-    vector<int> dist; //vector para armazenar a menor distancia (custo) ate cada vertice
+void dijkstra(vector<pair<my_pair, double>> adj[], int V, int source, int destination) {
+    vector<int> dist; //vector para armazenar as distancias ate cada vertice
     dist.assign(V, INF);
     vector<bool> visited; //vetor de bool para armazenar se um vertice ja foi visitado ou nao
     visited.assign(V, false);
-    vector<int> parent; //armazenar os vertices que compoem o menor caminho
+    vector<int> parent; //armazenar os vertices que compoem o menor custo da viagem
     parent.assign(V, -1);
     priority_queue<my_pair, vector<my_pair>, greater<my_pair>> my_pq; //fila de prioridades para armazenar os custos e os vertices (utilizando min-heap)
 
-    //inicializa o custo da origem com 0 e insere a origem na fila de prioridades
+    //inicializa o custo da origem (distancia) com 0 e insere a origem na fila de prioridades
     dist[source] = 0;
     my_pq.push({0, source});
 
     //enquanto a fila de prioridades nao estiver vazia, ira repetir ate as distancias serem verificadas
     while(!my_pq.empty()) { 
         int u = my_pq.top().second; //retorna o vertice que esta no topo da fila de prioridades
-        int cost = my_pq.top().first; //retorna o custo que esta no topo da fila
-        my_pq.pop(); //retira da fila de prioridade o pair com menor custo
+        my_pq.pop(); //retira da fila de prioridade o pair com menor distancia
         if(visited[u]) {
             continue;
         }
         visited[u] = true;
         if(u == destination) { //se o vertice que esta sendo analisado eh o destino
-            print_shortest_path(source, destination, cost, parent);
+            print_shortest_path(source, destination, dist[u], parent);
             return;
         }
-        //percorre os vertices adjacentes ao atual
         for(auto e : adj[u]) { 
-            int v = e.first, w = e.second; 
-            if(dist[v] > dist[u] + w) { //relaxamento: verifica se existe um caminho menor do que o armazenado em dist atual
-                dist[v] = dist[u] + w;
+            my_pair vertex_weight = e.first; //primeiro campo é o pair {vertice, distancia}
+            double toll = e.second; //segundo campo é o valor do pedagio
+            int v = vertex_weight.first, w = vertex_weight.second;
+            if(dist[v] > dist[u] + w + toll) { //relaxamento: verifica se existe um caminho de menor custo do que o armazenado em dist atual
+                dist[v] = dist[u] + w + toll;
                 parent[v] = u; //atribui para o vertice o seu antecessor que compoe o menor caminho
-                my_pq.push({dist[v], v}); //adiciona na fila de prioridades a nova dist atualizada (custo) e o vertice v
+                my_pq.push({dist[v], v}); //adiciona na fila de prioridades o novo custo atualizado e o vertice v
             }
         }
     }
@@ -83,16 +83,21 @@ void dijkstra(vector<my_pair> adj[], int V, int source, int destination) {
 
 int main() {
     int V = 5;
-    vector<my_pair> adj[V];
+    vector<pair<my_pair, double>> adj[V];
     
-    //adicionando na lista de adjacencias os vertices com seus respectivos vizinhos e distancias
-    adj[0].push_back({1, 1});
-    adj[0].push_back({4, 10});
-    adj[0].push_back({3, 3});
-    adj[1].push_back({2, 5});
-    adj[2].push_back({4, 1});
-    adj[3].push_back({2, 2});
-    adj[3].push_back({4, 6});
+    /*double fuel_price = 4;
+    double driving_range = 10;
+    double vehicle_cost = driving_range * fuel_price; */
+
+    //adicionando na lista de adjacencias os vertices com seus respectivos vizinhos e distancias e o valor do pedagio de cada vertice
+    adj[0].push_back({{1, 10}, 0});
+    adj[0].push_back({{4, 100}, 0});
+    adj[0].push_back({{3, 30}, 0});
+    adj[1].push_back({{2, 50}, 7});
+    adj[2].push_back({{4, 10}, 6});
+    adj[3].push_back({{2, 20}, 8});
+    adj[3].push_back({{4, 60}, 8});
+    adj[4].push_back({{4, 0}, 750}); //OBS: tem que considerar tambem o pedagio para entrar na ultima cidade, mas nao ta pegando esse valor
 
     //chamada para calcular o menor caminho passando a lista de adjacencias, o numero de vertices do grafo, a origem e o destino
     dijkstra(adj, V, 0, 4);
