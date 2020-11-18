@@ -23,21 +23,21 @@ const int INF = INT_MAX;
 typedef pair<int, int> my_pair;
 
 //funcao recursiva auxiliar para printar os vertices do menor caminho
-void tracking_path(vector<int> parent, int v) {
-    if(parent[v] == -1) {
+void tracking_path(vector<int> previous, int v) {
+    if(previous[v] == -1) {
         return;
     }
-    tracking_path(parent, parent[v]);
+    tracking_path(previous, previous[v]);
     cout << " -> " << v;
 }
 
 //imprime a solucao do problema
-void print_shortest_path(int source, int destination, int cost, vector<int> parent) {
+void print_shortest_path(int source, int destination, int cost, vector<int> previous) {
     cout << "Origem: "  << source << endl; 
     cout << "Destino: " << destination << endl;
     cout << "Custo: " << cost << endl;
     cout << "Caminho: " << source;
-    tracking_path(parent, destination);
+    tracking_path(previous, destination);
     cout << endl;
 }
 
