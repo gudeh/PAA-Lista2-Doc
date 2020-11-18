@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Este código resolve o terceiro problema da Lista 2 da disciplina de Projeto
+ * e Analise de Algoritmos.
  */
 
 /* 
@@ -20,102 +19,76 @@
 
 using namespace std;
 
-vector<vector<vector<int> > > n_matrices;
-vector<vector<vector<int> > > n_matrices_ids;
-//set<int> best;
-
-
+//Estrutura utilizada para armazenar de maneira intuitivamente as 
+//informações de cada item.
 struct item{
     int id;
     int peso;
     int lucro;
 };
 
+//A função recursiva OPT foi adaptada para o problema em questão.
+//Seu retorno é um par com um inteiro informando o lucro obtido até o momento e 
+//um vetor com os itens que compõem este lucro.
+//As entradas da função se da por dois vetores: um para os itens e outro para os 
+//caminhões que ainda não foram processados.
 pair<int,vector<item> > opt(vector<item> itens_restantes,vector<float> capacidade_atual){
     int total_cap=0; for(auto x:capacidade_atual) total_cap+=x;
-//    cout<<"total cap:"<<total_cap<<", item list size:"<<itens_restantes.size();
-//    for(int h=0;h<capacidade_atual.size();h++)
-//        cout<<",truck:"<<h<<">"<<capacidade_atual[h]; cout<<endl;
     vector<item> selected;
+//Caso base: se não há mais itens a serem analisados, ou os caminhoes nao possuem
+//mais espaço, retorna lucro 0 e uma lista vazia de itens.
     if(itens_restantes.size()==0 || total_cap<=0)
-    {
-//        if(itens_restantes.size()==0)
-//            cout<<"ITEM LIST EMPTY";
-//        else
-//            cout<<"NO SIZE AVAILABLE";
-//        cout<<"- RETURNING 0<<<<."<<endl;
-//        return 0;
-//        vector<int> aux;
         return pair<int,vector<item> >(0,selected);
-    }
+//Se não for o caso, se processa o primeiro item do vetor de entrada.
     else
     {
         item current=itens_restantes[0];
-        vector<int> rets;
-        //checando se o item a ser inserido cabe em algum caminhao.
-        bool fit=false; int ret=0;
+        //vetor auxiliar para armazenar e comparar os lucros que serão obtidos.
+        vector<pair<int,vector<item> > >  rets;
+        int ret=0;
+        //se tenta inserir o item em cada caminhão disponível.
         for(int i=0;i<capacidade_atual.size();i++)
         {
             vector<item> item_aux; item_aux=itens_restantes;
             pair<int,vector<item> > solut,solut2;
-            
+            selected.clear();
+            //Caso um caminhão tenha espaço, é feito uma chamada recursiva                      
             if(current.peso>capacidade_atual[i])
             {
                 item_aux.erase(item_aux.begin());
                 solut=opt(item_aux,capacidade_atual);
                 ret=get<0>(solut);
-//                cout<<"OUT->current.peso:"<<current.peso<<"truck[i]:"<<capacidade_atual[i]<<endl;
-//                cout<<"-----RET1:"<<ret<<endl<<endl;
-//                return ret;
-                
-//                n_matrices[i][capacidade_atual[i]][current.id]=ret;
-//                best.erase(current.id);
+                selected=get<1>(solut);
             }
             else
             {
-//                if(n_matrices[i][capacidade_atual[i]][current.id]<0)
-//                {
-                    vector<float> cap_aux=capacidade_atual;
-                    cap_aux[i]=cap_aux[i]-current.peso;
-                     item_aux.erase(item_aux.begin());
-                     solut=opt(item_aux,cap_aux);
-                     solut2=opt(item_aux,capacidade_atual);
-                     int aux1=current.lucro+get<0>(solut), 
-                             aux2=get<0>(solut2);
-                     ret=max(aux1,aux2);
-//                    ret=max(current.lucro+opt(item_aux,cap_aux),
-//                            opt(item_aux,capacidade_atual));
-                    if(aux1>aux2)
-                    {
-                        selected=get<1>(solut);
-                        selected.push_back(current);
-//                        n_matrices_ids[i][capacidade_atual[i]][current.id]=current.id;
-//                        best.insert(current.id);
-                    }
-//                    else
-//                        best.erase(current.id);
-    //                cout<<"IN->current.peso:"<<current.peso<<",truck[i]:"<<capacidade_atual[i]<<endl;
-    //                cout<<"-----RET2:"<<ret<<endl<<endl;
-    //                return ret;
-
-//                    cout<<"i:"<<i<<",cap[i]:"<<capacidade_atual[i]<<",id:"<<current.id<<endl;
-//                    cout<<n_matrices.size()<<"|"<<n_matrices[i].size()<<"|"<<n_matrices[i][capacidade_atual[i]].size()<<endl;
-//                    n_matrices[i][capacidade_atual[i]][current.id]=ret;
-                    
-//                }
-//                else
-//                    ret=n_matrices[i][capacidade_atual[i]][current.id];
+                vector<float> cap_aux=capacidade_atual;
+                cap_aux[i]=cap_aux[i]-current.peso;
+                 item_aux.erase(item_aux.begin());
+                 solut=opt(item_aux,cap_aux);
+                 solut2=opt(item_aux,capacidade_atual);
+                 int aux1=current.lucro+get<0>(solut), 
+                         aux2=get<0>(solut2);
+                 ret=max(aux1,aux2);
+                if(aux1>=aux2)
+                {
+                    selected=get<1>(solut);
+                    selected.push_back(current);
+                }
+                else                   
+                    selected=get<1>(solut2);
             }
-            rets.push_back(ret);
+            rets.push_back(pair<int,vector<item> > (ret,selected));
         }
-        ret=0;
+        ret=0;  selected.clear();
         for(auto x:rets)
         {
-            if(x>ret)
-                ret=x;
+            if(get<0>(x)>ret)
+            {
+                ret=get<0>(x);
+                selected=get<1>(x);
+            }
         }
-//        return ret;
-//        vector<int> aux;
         return pair<int,vector<item> >(ret,selected);
     }
 }
@@ -124,20 +97,11 @@ pair<int,vector<item> > opt(vector<item> itens_restantes,vector<float> capacidad
 //Retorno: os itens que não foram entregues (vector) e o lucro perdido (int).
 pair<vector<int>,int> exercicioDois(vector<float> capacidade_caminhoes, vector< int> peso_itens, vector< int> lucro_itens)
 {   
-    int aux=0; float auxf=0;
+    int aux=0,todo_peso=0; float auxf=0;
     cout<<"Numero de caminhoes:"<<capacidade_caminhoes.size()<<endl<<"\tCapacidade total:";     for(auto x : capacidade_caminhoes)  auxf+=x;    cout<<auxf<<endl<<endl;
-    cout<<"Numero de itens:"<<peso_itens.size()<<endl<<"\tPeso total:"; aux=0;  for(auto x : peso_itens)        aux+=x; cout<<aux<<endl;
+    cout<<"Numero de itens:"<<peso_itens.size()<<endl<<"\tPeso total:"; todo_peso=0;  for(auto x : peso_itens)        todo_peso+=x; cout<<todo_peso<<endl;
     cout<<"\tLucro de todos itens:";   aux=0;  for(auto x : lucro_itens)        aux+=x; cout<<aux<<endl;
     
-    //Inicializando matriz para memorizacao
-    vector<int> aux1(peso_itens.size()+1,-1);
-    for(int x=0;x<capacidade_caminhoes.size();x++)
-    {
-        vector<vector<int> > aux2(capacidade_caminhoes[x]+1,aux1);
-        n_matrices.push_back(aux2);
-    }
-    n_matrices_ids=n_matrices;
-//    cout<<n_matrices.size()<<"|"<<n_matrices[0].size()<<"|"<<n_matrices[0][2].size()<<endl;
     vector<item> all_items;
     for(int x=0;x<peso_itens.size();x++)
     {
@@ -150,6 +114,7 @@ pair<vector<int>,int> exercicioDois(vector<float> capacidade_caminhoes, vector< 
     int ret=0; pair<int,vector<item> > solution;
     solution=opt(all_items,capacidade_caminhoes);
     ret=get<0>(solution);
+    cout<<endl<<"ITENS SELECIONADOS PARA ENTREGA:"<<endl;
     cout<<"  ids:";for(int u=0;u<get<1>(solution).size();u++)
         cout<<get<1>(solution)[u].id<<","; cout<<endl;
     cout<<"pesos:";for(int u=0;u<get<1>(solution).size();u++)
@@ -157,38 +122,20 @@ pair<vector<int>,int> exercicioDois(vector<float> capacidade_caminhoes, vector< 
     cout<<"lucro:";for(int u=0;u<get<1>(solution).size();u++)
         cout<<get<1>(solution)[u].lucro<<","; cout<<endl;
         
-    cout<<">>RETORNO:"<<ret<<endl;    
-//    int i=0,j=0,k=0;
-//    for(auto x:n_matrices)
-//    {
-//        i++; cout<<"truck:"<<i<<endl;
-//        for(auto y:x[i])
-//            {j++;cout<<j<<"|";}cout<<endl;
-//            k=0;
-//        for(auto y:x)
-//        {
-//             cout<<k<<":";k++;
-//            for(auto z:y)
-//                cout<<z<<",";
-//            cout<<endl;
-//        }
-//        cout<<endl;
-//    }
+    cout<<"Lucro otimo:"<<ret<<endl;    
+
 }
 
 
 
 int main(int argc, char** argv) {
+    vector<float> capacidades={10,20};
+    vector< int> pesos={5,7,10,20,10},lucros={5,7,10,20,10};
     
-//    vector<float> capacidades={10,20};
-//    vector< int> pesos={5,7,10,20,10},lucros={5,7,10,20,10};
-    
-    vector<float> capacidades={90,100};
-    vector< int> pesos={ 59, 61, 70, 75, 76, 30, 18,9, 23, 20},
-                lucros={ 94, 75, 74, 79, 80, 16, 78,35, 89, 36};
-
-
-    
+//    vector<float> capacidades={90,100};
+//    vector< int> pesos={ 59, 61, 70, 75, 76, 30, 18,9, 23, 20},
+//                lucros={ 94, 75, 74, 79, 80, 16, 78,35, 89, 36};
+  
     if(pesos.size() == lucros.size())
         exercicioDois(capacidades,pesos,lucros);
     else
