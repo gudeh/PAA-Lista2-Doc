@@ -46,13 +46,14 @@ pair<int,vector<item> > opt(vector<item> itens_restantes,vector<float> capacidad
         //vetor auxiliar para armazenar e comparar os lucros que serão obtidos.
         vector<pair<int,vector<item> > >  rets;
         int ret=0;
-        //se tenta inserir o item em cada caminhão disponível.
+        //Se insere o primeiro item em cada caminhão.
         for(int i=0;i<capacidade_atual.size();i++)
         {
             vector<item> item_aux; item_aux=itens_restantes;
             pair<int,vector<item> > solut,solut2;
             selected.clear();
-            //Caso um caminhão tenha espaço, é feito uma chamada recursiva                      
+            //Caso o caminhao i nao tenha capacidade, é feito uma chamada recursiva
+            //desconsiderando o item atual
             if(current.peso>capacidade_atual[i])
             {
                 item_aux.erase(item_aux.begin());
@@ -60,6 +61,8 @@ pair<int,vector<item> > opt(vector<item> itens_restantes,vector<float> capacidad
                 ret=get<0>(solut);
                 selected=get<1>(solut);
             }
+            //Caso haja espaço no caminhao i, o valor máximo de retorno entre uma
+            //chamada considerando o item sendo carregado e outra sem o item.
             else
             {
                 vector<float> cap_aux=capacidade_atual;
@@ -81,6 +84,7 @@ pair<int,vector<item> > opt(vector<item> itens_restantes,vector<float> capacidad
             rets.push_back(pair<int,vector<item> > (ret,selected));
         }
         ret=0;  selected.clear();
+        //Escolhendo o caminhao que apresentou o melhor lucro para retorno.
         for(auto x:rets)
         {
             if(get<0>(x)>ret)
@@ -94,8 +98,7 @@ pair<int,vector<item> > opt(vector<item> itens_restantes,vector<float> capacidad
 }
 
 
-//Retorno: os itens que não foram entregues (vector) e o lucro perdido (int).
-pair<vector<int>,int> exercicioDois(vector<float> capacidade_caminhoes, vector< int> peso_itens, vector< int> lucro_itens)
+void exercicioDois(vector<float> capacidade_caminhoes, vector< int> peso_itens, vector< int> lucro_itens)
 {   
     int aux=0,todo_peso=0; float auxf=0;
     cout<<"Numero de caminhoes:"<<capacidade_caminhoes.size()<<endl<<"\tCapacidade total:";     for(auto x : capacidade_caminhoes)  auxf+=x;    cout<<auxf<<endl<<endl;
