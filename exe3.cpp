@@ -100,12 +100,13 @@ pair<int,vector<item> > opt(vector<item> itens_restantes,vector<float> capacidad
 
 void exercicioDois(vector<float> capacidade_caminhoes, vector< int> peso_itens, vector< int> lucro_itens)
 {   
-    int aux=0,todo_peso=0; float auxf=0;
+    int todo_lucro=0,todo_peso=0; float auxf=0;
     cout<<"Numero de caminhoes:"<<capacidade_caminhoes.size()<<endl<<"\tCapacidade total:";     for(auto x : capacidade_caminhoes)  auxf+=x;    cout<<auxf<<endl<<endl;
     cout<<"Numero de itens:"<<peso_itens.size()<<endl<<"\tPeso total:"; todo_peso=0;  for(auto x : peso_itens)        todo_peso+=x; cout<<todo_peso<<endl;
-    cout<<"\tLucro de todos itens:";   aux=0;  for(auto x : lucro_itens)        aux+=x; cout<<aux<<endl;
+    cout<<"\tLucro de todos itens:";   todo_lucro=0;  for(auto x : lucro_itens)        todo_lucro+=x; cout<<todo_lucro<<endl;
     
     vector<item> all_items;
+    //Montando structures a partir dos dados de entrada.
     for(int x=0;x<peso_itens.size();x++)
     {
         item item_obj;
@@ -124,21 +125,40 @@ void exercicioDois(vector<float> capacidade_caminhoes, vector< int> peso_itens, 
         cout<<get<1>(solution)[u].peso<<","; cout<<endl;
     cout<<"lucro:";for(int u=0;u<get<1>(solution).size();u++)
         cout<<get<1>(solution)[u].lucro<<","; cout<<endl;
-        
-    cout<<"Lucro otimo:"<<ret<<endl;    
-
+    cout<<"Lucro otimo:"<<ret<<endl<<endl;    
+    vector<item> remain=get<1>(solution);
+    cout<<"ITENS QUE FICARAM DE FORA DA ENTREGA:"<<endl;
+    for(int x=0;x<remain.size();x++)
+    {
+        for(int y=0;y<all_items.size();y++)
+        {
+            if(all_items[y].id==remain[x].id)
+            {
+                all_items.erase(all_items.begin()+y);
+                break;
+            }
+        }
+    }
+    cout<<"  ids:";for(auto x:all_items)
+        cout<<x.id<<","; cout<<endl;
+    cout<<"pesos:";for(auto x:all_items)
+        cout<<x.peso<<","; cout<<endl;
+    cout<<"lucro:";for(auto x:all_items)
+        cout<<x.lucro<<","; cout<<endl;
+        cout<<"Lucro perdido:"<<todo_lucro-get<0>(solution)<<endl;
 }
 
 
-
 int main(int argc, char** argv) {
-    vector<float> capacidades={10,20};
-    vector< int> pesos={5,7,10,20,10},lucros={5,7,10,20,10};
+//    vector<float> capacidades={10,20};
+//    vector< int> pesos={5,7,10,20,10},lucros={5,7,10,20,10};
     
-//    vector<float> capacidades={90,100};
-//    vector< int> pesos={ 59, 61, 70, 75, 76, 30, 18,9, 23, 20},
-//                lucros={ 94, 75, 74, 79, 80, 16, 78,35, 89, 36};
+    //Definindo valores de entrada para o problema.
+    vector<float> capacidades={90,100};
+    vector< int> pesos={ 59, 61, 70, 75, 76, 30, 18,9, 23, 20},
+                lucros={ 94, 75, 74, 79, 80, 16, 78,35, 89, 36};
   
+    //Chamada da função recursiva que resolve o problema.
     if(pesos.size() == lucros.size())
         exercicioDois(capacidades,pesos,lucros);
     else
