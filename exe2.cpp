@@ -27,12 +27,12 @@ void print_cidades(vector<int> previous, int v) {
     if(previous[v] == -1) {
         return;
     }
-    print_cidades(previous, previous[v]);
+    print_cidades(previous, previous[v]); 
     cout << " -> " << v;
 }
 
 //imprime a solucao do problema
-void print_menor_custo(int source, int destination, int cost, vector<int> previous) {
+void print_menor_custo(int source, int destination, double cost, vector<int> previous) {
     cout << "Cidade de Origem: "  << source << endl; 
     cout << "Cidade de Destino: " << destination << endl;
     cout << "Custo da viagem: R$ " << cost << endl;
@@ -59,9 +59,9 @@ void dijkstra(vector<my_pair> adj[], int V, int source, int destination, vector<
     //enquanto a fila de prioridades nao estiver vazia, ira repetir ate os custos da viagem serem verificados
     while(!my_pq.empty()) { 
         int u = my_pq.top().second; //retorna o vertice que esta no topo da fila de prioridades
-        my_pq.pop(); //retira da fila de prioridade o pair com menor custo
+        my_pq.pop(); //retira da fila de prioridade o pair com menor custo    
         if(visited[u]) {
-            continue;
+            continue; //se o vertice ja foi analisado, pula para a proxima iteracao
         }
         visited[u] = true;
         if(u == destination) { //se o vertice que esta sendo analisado eh o destino
@@ -76,7 +76,7 @@ void dijkstra(vector<my_pair> adj[], int V, int source, int destination, vector<
             int w = e.second;
             //relaxamento: verifica se existe um caminho de menor custo do que o armazenado atualmente   
             if(custos[v] > ((custos[u] + (w / autonomia) * preco_combustivel) + pedagio[v])) { 
-                custos[v] = (custos[u] + (w / autonomia) * preco_combustivel) + pedagio[v]; //atualiza o menor custo para chegar ate a cidade 'v'
+                custos[v] = (custos[u] + (w / autonomia) * preco_combustivel) + pedagio[v]; //atualiza a rota de menor custo
                 previous[v] = u; //atribui para o vertice o seu antecessor que compoe a rota de menor custo
                 my_pq.push({custos[v], v}); //adiciona na fila de prioridades o novo custo atualizado e o vertice v
             }
@@ -102,10 +102,10 @@ int main() {
 
     //armazenando o valor do pedagio de cada vertice
     pedagio.push_back(5);
-    pedagio.push_back(6);
-    pedagio.push_back(8);
+    pedagio.push_back(6.5);
+    pedagio.push_back(8.9);
     pedagio.push_back(7);
-    pedagio.push_back(6);
+    pedagio.push_back(6.5);
 
     //chamada para calcular o caminho de menor custo passando:
     //a lista de adjacencias, o numero de vertices do grafo, a origem, o destino, 
