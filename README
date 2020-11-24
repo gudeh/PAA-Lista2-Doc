@@ -1,1 +1,2 @@
 This folder holds C++ implementations for solving a graduantion course assignment realized at UFSC. 
+Implementations make use of BFS on a graph in exercise 1, Djiskstra in exercise 2 and dynamic programming (recursive, top-down) for solving specific problems.
